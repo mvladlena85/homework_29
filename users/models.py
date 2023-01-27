@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Location(models.Model):
@@ -14,15 +15,11 @@ class Location(models.Model):
         verbose_name_plural = "Адреса"
 
 
-class User(models.Model):
+class User(AbstractUser):
     ROLES = [('member', 'пользователь'), ('moderator', 'модератор'), ('admin', 'администратор')]
 
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
     role = models.CharField(max_length=20, choices=ROLES, default="member")
-    age = models.SmallIntegerField()
+    age = models.SmallIntegerField(blank=True, null=True)
     locations = models.ManyToManyField(Location)
 
     def __str__(self):

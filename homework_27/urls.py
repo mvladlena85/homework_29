@@ -16,15 +16,23 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from ads import views
+from ads.views import ad
 from homework_27 import settings
 
+
 urlpatterns = [
+    # path("", ad.get_base_url, name="base"),
     path('admin/', admin.site.urls),
-    path('', include("ads.urls")),
+    path('cat/', include("ads.urls.category")),
+    path('ad/', include("ads.urls.ad")),
+    path('selection/', include("ads.urls.selection")),
     path('user/', include("users.urls.user_urls")),
     path('', include("users.urls.location_urls")),
+    path('token/', TokenObtainPairView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view()),
 ]
 
 if settings.DEBUG:

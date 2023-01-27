@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from ads.models import Selection
 from users.models import User, Location
 
 
@@ -38,10 +39,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'role', 'age', 'locations']
+        fields = ['id', 'username', 'first_name', 'last_name', 'role', 'age', 'locations', 'password']
 
     def is_valid(self, raise_exception=False):
-        self._locations = self.initial_data.pop('locations')
+        self._locations = self.initial_data.pop('locations', [])
         return super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
@@ -51,6 +52,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             location_obj, _ = Location.objects.get_or_create(name=location)
             user.locations.add(location_obj)
 
+        user.set_password(validated_data["password"])
         user.save()
         return user
 
@@ -87,3 +89,5 @@ class UserDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id']
+
+
